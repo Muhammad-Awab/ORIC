@@ -16,16 +16,21 @@ def convert_and_save(uploaded_file):
     return None
 
 def main():
-    st.title("PNG to JPEG Converter file")
+    st.title("PNG to JPEG Converter")
 
     # File uploader for multiple PNG files
     uploaded_files = st.file_uploader("Choose PNG files", type="png", accept_multiple_files=True)
 
     if st.button("Convert to JPEG"):
-        for uploaded_file in uploaded_files:
-            img_byte_arr = convert_and_save(uploaded_file)
-            if img_byte_arr:
-                file_name = os.path.splitext(uploaded_file.name)[0] + '.jpeg'
+        if uploaded_files:
+            converted_files = []
+            for uploaded_file in uploaded_files:
+                img_byte_arr = convert_and_save(uploaded_file)
+                if img_byte_arr:
+                    file_name = os.path.splitext(uploaded_file.name)[0] + '.jpeg'
+                    converted_files.append((file_name, img_byte_arr))
+
+            for file_name, img_byte_arr in converted_files:
                 st.download_button(
                     label=f"Download {file_name}",
                     data=img_byte_arr,
@@ -33,8 +38,8 @@ def main():
                     mime='image/jpeg'
                 )
                 st.success(f"Converted and ready for download: {file_name}")
-            else:
-                st.error("Failed to convert the file")
+        else:
+            st.error("No files uploaded for conversion")
 
 if __name__ == "__main__":
     main()
