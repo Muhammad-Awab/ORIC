@@ -1,0 +1,109 @@
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+**/bin/
+**/obj/
+
+# Visual Studio
+.vs/
+.vscode/
+.vscode-test/
+*.csproj.user
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+*.sln.iml
+
+# Mac
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Npm packages
+node_modules/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.userprefs
+
+# Logs
+*.log
+logs/
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# Include if using WCF
+# WCF Client
+svcutil/
+
+# Chutzpah Test results
+_chutzpah/
+
+# nCrunch
+_nCrunch_*
+.*crunch*.local.xml
+nCrunchTemp_*
+
+# Coverity Scan
+coverity/
+
+# Azure Pipelines
+.azure-pipelines/
+
+# CodeRush
+CR_*
+
+# Personal ReSharper settings
+*.DotSettings.user
+
+# Tye
+.tye/
+
+# Local History for JetBrains IDEs
+localHistory/
+
+# IIS
+[Ii][Nn][Ee][Tt][Pp][Uu][Bb]/[Hh][Ii][Ss][Tt][Oo][Rr][Yy]/
+
+# End of https://www.toptal.com/developers/gitignore/api/visualstudio
+
+# dotnet publish folder
+**/out/
+
+# Blazor Cache
+**/wwwroot/css/
+**/wwwroot/js/
+**/wwwroot/lib/
+
+# Ignore environment variables file
+.env
+
+# Ignore package lock files
+*.npmrc
+
+# Ignore secrets
+secrets.json
+
+# Optional: Ignore test result directories
+TestResults/

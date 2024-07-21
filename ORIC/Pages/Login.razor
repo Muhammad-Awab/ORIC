@@ -1,0 +1,145 @@
+﻿@page "/login"
+@using System.Data;
+@using System.Data.SqlClient;
+
+@layout BlankLayout
+
+
+<style>
+    body, html {
+        overflow: hidden;
+    }
+
+    .background-image {
+        height: 100vh;
+        position: relative;
+        overflow: hidden !important;
+    }
+
+    .card {
+        background-color: rgba(255, 255, 255, 0.8) !important; /* Adjust the alpha (fourth parameter) to set the transparency */
+        border-radius: 1rem;
+    }
+
+    .background-image::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-image: url('/background.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        filter: blur(5px);
+        z-index: -1; /* Place it behind the other content */
+    }
+
+    .custom-card-shadow {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.9);
+    }
+</style>
+<section class="vh-30 background-image mt-1 py-5">
+    <div class="container py-5 vh-30">
+        <div class="row d-flex justify-content-center align-items-center">
+            <div class="col-xl-10">
+                <div class="mt-5"></div>
+
+                <div class="card shadow bg-body rounded border border-dark mt-2" style="border-radius: 1rem;">
+                    <div class="row g-0 align-items-center">
+                        <div class="col-md-6 col-lg-5 d-none d-md-block">
+                            <img src="/oric.png" alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
+                        </div>
+                        <div class="col-md-6 col-lg-7 d-flex align-items-center">
+                            <div class="card-body p-lg-5 text-black">
+                                <form>
+                                    <div class="d-flex align-items-center mb-3 pb-1">
+                                        <i class="fas fa-cubes fa-2x me-3"></i>
+
+                                    </div>
+
+                                    <h3 class="fw-normal mb-3 pb-3 justify-content-center align-content-center" style="letter-spacing: 1px;"><b>ORIC  Login</b></h3>
+
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label" for="form2Example17">Email address</label>
+                                        <input type="email" id="form2Example17" placeholder="Enter Email" class="form-control form-control-lg border border-dark" @bind="rs.email" />
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label" for="form2Example27">Password</label>
+                                        <input type="password" id="form2Example27" placeholder="Enter Password" class="form-control form-control-lg border border-dark" @bind="rs.password" />
+                                    </div>
+
+                                    <div class="pt-1 mb-4 mt-2">
+                                        <div class="d-flex justify-content-center align-content-center">
+                                            <button style="width: 166px; height: 35px;" type="button" class="btn btn-dark" @onclick="Authenticate">
+                                                <h6>LOGIN</h6>
+                                            </button>
+                                        </div>
+                                    </div>
+
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+@code {
+    ENTRegistration rs = new ENTRegistration();
+    // Authentication.UserSession userSession { get; set; } = new Authentication.UserSession();
+    DataTable dt = new DataTable();
+    private async Task GetLoginFromDb()
+    {
+
+        SqlParameter[] sp =
+        {
+                new SqlParameter("@Email",rs.email),
+                new SqlParameter("@Password", rs.password)
+
+    };
+        dt = await ClassLibraryDAL.DALCRUD.ReadSpecificDataTable("SP_login", sp);
+
+    }
+
+    private async Task Authenticate()
+    {
+        await GetLoginFromDb();
+
+        if (dt.Rows.Count > 0)
+        {
+            var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            var UserSession = new Authentication.UserSession()
+                {
+                    UserName = dt.Rows[0]["firstName"].ToString(),
+                    Role = dt.Rows[0]["role"].ToString(),
+                    UserId = dt.Rows[0]["userID"].ToString()
+                };
+
+            await customAuthStateProvider.UpdateAuthenticationState(UserSession);
+
+            if (UserSession.Role == "Admin")
+            {
+                nm.NavigateTo("/projects", true); // Navigate to the admin page
+            }
+            else
+            {
+                nm.NavigateTo("/", true); // Navigate to the user page
+            }
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert", "Invalid username or password");
+            return;
+        }
+    }
+
+}

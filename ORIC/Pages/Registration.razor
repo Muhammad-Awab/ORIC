@@ -1,0 +1,106 @@
+﻿@page "/registration"
+@using System.Data.SqlClient;
+@layout BlankLayout
+
+<style>
+    /* Add your existing CSS styles here */
+</style>
+
+<section class="vh-30 background-image py-5 ">
+    <div class="container py-5 vh-30">
+        <div class="row d-flex justify-content-center align-items-center">
+            <div class="col-xl-10">
+                <div class="mt-5"></div>
+
+                <div class="card cascading-right border-dark" style="
+            background: hsla(0, 0%, 100%, 0.55);
+            backdrop-filter: blur(30px);
+            ">
+                    <div class="card-body p-5 shadow-5 text-center">
+                        <h2 class="fw-bold mb-5">ADD FACULTY</h2>
+                        <EditForm Model="rs" OnValidSubmit="RegisterUser">
+                            <!-- 2 column grid layout with text inputs for the first and last names -->
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div class="form-outline">
+                                        <label class="form-label" for="form3Example1">First name</label>
+                                        <InputText type="text" placeholder="Enter your first name" id="form3Example1" class="form-control" @bind-Value="rs.firstName" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="form-outline">
+                                        <label class="form-label" for="form3Example2">Last name</label>
+                                        <InputText type="text" placeholder="Enter your last name" id="form3Example2" class="form-control" @bind-Value="rs.lastName" required />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Email input -->
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="form3Example4">Email</label>
+                                <InputText type="email" placeholder="Email" id="form3Example4" class="form-control" @bind-Value="rs.email" required />
+                            </div>
+
+                            <!-- Password input -->
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="form3Example4">Password</label>
+                                <InputText type="password" placeholder="Password" id="form3Example4" class="form-control" @bind-Value="rs.password" required />
+                            </div>
+
+                            <!-- Role input (hidden) -->
+                            <InputText type="hidden" @bind-Value="rs.role" />
+
+                            <!-- Register buttons -->
+                            <button style="width:150px; background-color:#232F3E; height:35px; border-radius: 14px !important" type="submit" class="btn">
+                                <span style="color:white">Register</span>
+                            </button>
+
+                            <button style="width:150px; background-color:#232F3E; height:35px; border-radius: 14px !important" type="button" class="btn" @onclick="Cancel">
+                                <span style="color:white">Cancel</span>
+                            </button>
+                        </EditForm>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    ENTRegistration rs { get; set; } = new ENTRegistration();
+
+
+
+
+
+    private async Task RegisterUser()
+    {
+        SqlParameter[] sp =
+        {
+            new SqlParameter("@firstName", rs.firstName ?? (object)DBNull.Value),
+            new SqlParameter("@lastName", rs.lastName ?? (object)DBNull.Value),
+            new SqlParameter("@email", rs.email ?? (object)DBNull.Value),
+            new SqlParameter("@password", rs.password ?? (object)DBNull.Value),
+            new SqlParameter("@role", rs.role ?? (object)DBNull.Value),
+    };
+
+        try
+        {
+            await DALCRUD.SaveData("SP_SaveRegistration", sp);
+            nm.NavigateTo("/");
+        }
+        catch (SqlException ex) when (ex.Number == 50000 && ex.Message.Contains("User already exists"))
+        {
+            await js.InvokeVoidAsync("alert", "User already exists");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
+    }
+
+    private void Cancel()
+    {
+        nm.NavigateTo("/");
+    }
+}
