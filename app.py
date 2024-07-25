@@ -13,18 +13,18 @@ def lade_trainingsdaten_aus_github(url):
     try:
         response = requests.get(url)
         response.raise_for_status()
+        # Log the content for debugging
+        st.write("Fetched data from GitHub:", response.text)
         return response.json()
     except requests.exceptions.RequestException as e:
         st.error(f"Fehler beim Laden der Datei von GitHub: {e}")
         return []
-
-# Funktion zum Speichern der Trainingsdaten
-def speichere_trainingsdaten_in_datei(trainingsdaten, dateipfad):
-    with open(dateipfad, 'w', encoding='utf-8') as file:
-        json.dump(trainingsdaten, file, ensure_ascii=False, indent=4)
+    except json.JSONDecodeError as e:
+        st.error(f"Fehler beim Parsen der JSON-Daten: {e}")
+        return []
 
 # URL zur "trainingsdaten.json" Datei in deinem GitHub Repository
-github_url = 'https://github.com/Muhammad-Awab/ORIC/blob/dev/trainingsdaten.json'
+github_url = 'https://raw.githubusercontent.com/Muhammad-Awab/ORIC/dev/trainingsdaten.json'
 
 # Laden der Trainingsdaten von GitHub
 trainingsdaten = lade_trainingsdaten_aus_github(github_url)
@@ -95,4 +95,3 @@ for eintrag in chat_history:
         st.write(f"AventraGPT: {eintrag['content']}")
     elif eintrag['role'] == 'system':
         st.write(f"System: {eintrag['content']}")
-                                            
