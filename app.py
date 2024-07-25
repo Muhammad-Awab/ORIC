@@ -14,7 +14,7 @@ def lade_trainingsdaten_aus_github(url):
         response = requests.get(url)
         response.raise_for_status()
         # Log the content for debugging
-        st.write("Fetched data from GitHub:", response.text)
+        
         return response.json()
     except requests.exceptions.RequestException as e:
         st.error(f"Fehler beim Laden der Datei von GitHub: {e}")
