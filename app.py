@@ -24,7 +24,7 @@ def speichere_trainingsdaten_in_datei(trainingsdaten, dateipfad):
         json.dump(trainingsdaten, file, ensure_ascii=False, indent=4)
 
 # URL zur "trainingsdaten.json" Datei in deinem GitHub Repository
-github_url = 'https://raw.githubusercontent.com/Bernhard-Keller123/240715-methylation-app/main/data/trainingsdaten.json'
+github_url = 'https://github.com/Muhammad-Awab/ORIC/blob/dev/trainingsdaten.json'
 
 # Laden der Trainingsdaten von GitHub
 trainingsdaten = lade_trainingsdaten_aus_github(github_url)
